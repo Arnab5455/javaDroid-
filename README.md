@@ -15,6 +15,8 @@ javaDroid is a free open source project for learn and practice java programming.
 .
 .
 .
+User guide 
+first download html file than open the download file with any browser 
 
 
 
@@ -31,7 +33,7 @@ from Claude AI by Anthropic (claude.ai)
 
 ### How it was made
 - AI Tool used: Claude (claude.ai)
-- Made by: [ARNAB]
+- Made by: ARNAB
 - Purpose: Learning Java on Android
 
 ### Disclaimer
