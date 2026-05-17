@@ -9,9 +9,10 @@ javaDroid is a free open source project for learn and practice java programming.
 ### WEBSITE 
 https://aoynb.github.io/javaDroid-/
               
+
 ### User Guide 
 
-First download html file than open the download file with any browser 
+use web version or download html file than open the download file with any browser(work offline)
 
 
 
