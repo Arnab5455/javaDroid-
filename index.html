@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>JavaDroid v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&family=Exo+2:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080b10;
+  --surf1: #0e1219;
+  --surf2: #131820;
+  --surf3: #1a2030;
+  --surf4: #202840;
+  --border: #1e2d45;
+  --border2: #2a3f5f;
+  --acc: #00d4ff;
+  --acc2: #0099cc;
+  --acc3: #00ffcc;
+  --warn: #ffaa00;
+  --err: #ff4466;
+  --ok: #00e676;
+  --purple: #bb86fc;
+  --text: #cdd9e5;
+  --text2: #8899aa;
+  --text3: #445566;
+  --kw: #569cd6;
+  --kw2: #c586c0;
+  --str: #ce9178;
+  --num: #b5cea8;
+  --cmt: #6a9955;
+  --type: #4ec9b0;
+  --fn: #dcdcaa;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  background: linear-gradient(90deg, #0a0f18, #0e1822);
+  border-bottom: 1px solid var(--border2);
+  padding: 0 10px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+}
+
+.logo-box {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 900; color: #000;
+  box-shadow: 0 0 12px rgba(0,212,255,0.4);
+  flex-shrink: 0;
+}
+
+.logo-text {
+  font-size: 17px; font-weight: 800;
+  color: var(--acc);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+.logo-ver {
+  font-size: 9px; color: var(--acc3);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+}
+
+.file-tab {
+  flex: 1;
+  background: var(--surf3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text2);
+  display: flex; align-items: center; gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+.file-dot { width:7px; height:7px; border-radius:50%; background:var(--ok); flex-shrink:0; }
+.file-dot.unsaved { background: var(--warn); }
+.file-name { truncate: ellipsis; white-space:nowrap; overflow:hidden; }
+
+.top-btns { display:flex; gap:5px; flex-shrink:0; }
+
+.icon-btn {
+  background: var(--surf3);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  width: 34px; height: 34px;
+  display: flex; align-items:center; justify-content:center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.15s;
+  color: var(--text2);
+}
+.icon-btn:hover { background: var(--surf4); color: var(--text); border-color: var(--border2); }
+.icon-btn:active { transform: scale(0.92); }
+
+.run-btn {
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  border: none;
+  border-radius: 8px;
+  padding: 0 14px;
+  height: 34px;
+  color: #000;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex; align-items:center; gap:5px;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(0,212,255,0.3);
+}
+.run-btn:hover { box-shadow: 0 0 18px rgba(0,212,255,0.5); }
+.run-btn:active { transform: scale(0.95); }
+.run-btn.running { background: linear-gradient(135deg, #334, #223); color: var(--text2); box-shadow:none; }
+
+/* ── NAV TABS ── */
+.nav-tabs {
+  background: var(--surf1);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display:none; }
+
+.ntab {
+  padding: 7px 14px;
+  font-size: 12px; font-weight: 600;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+  display: flex; align-items:center; gap:5px;
+  letter-spacing: 0.3px;
+}
+.ntab:hover { color: var(--text2); background: var(--surf2); }
+.ntab.active { color: var(--acc); border-bottom-color: var(--acc); background: var(--surf2); }
+.ntab .badge {
+  background: var(--acc);
+  color: #000;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 10px;
+}
+
+/* ── PANELS ── */
+.panel { display:none; flex:1; overflow:hidden; flex-direction:column; }
+.panel.active { display:flex; }
+
+/* ── EDITOR PANEL ── */
+.editor-area {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.gutter {
+  background: var(--surf1);
+  border-right: 1px solid var(--border);
+  padding: 12px 6px 12px 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text3);
+  text-align: right;
+  min-width: 36px;
+  overflow: hidden;
+  flex-shrink: 0;
+  line-height: 1.65;
+  user-select: none;
+  pointer-events: none;
+}
+
+.editor {
+  flex: 1;
+  background: var(--surf1);
+  border: none; outline: none;
+  padding: 12px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.65;
+  resize: none;
+  tab-size: 4;
+  overflow-y: auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  caret-color: var(--acc);
+  white-space: pre;
+  user-select: text;
+  -webkit-user-select: text;
+}
+.editor::selection { background: rgba(0,212,255,0.2); }
+
+/* ── OUTPUT PANEL ── */
+.output-wrap {
+  background: var(--surf2);
+  border-top: 2px solid var(--border2);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.output-hdr {
+  display: flex; align-items:center; gap:8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+
+.out-title { font-size:12px; font-weight:700; color:var(--text2); flex:1; letter-spacing:1px; }
+
+.status-dot {
+  width:8px; height:8px; border-radius:50%;
+  background: var(--text3); flex-shrink:0;
+  transition: all 0.3s;
+}
+.status-dot.ok { background:var(--ok); box-shadow:0 0 6px var(--ok); }
+.status-dot.err { background:var(--err); box-shadow:0 0 6px var(--err); }
+.status-dot.run { background:var(--warn); animation:blink 0.6s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+.out-acts { display:flex; gap:5px; }
+.out-btn {
+  background: var(--surf3); border:1px solid var(--border);
+  border-radius:4px; padding:2px 7px;
+  color:var(--text2); font-size:11px; cursor:pointer;
+  font-family:'Exo 2',sans-serif; font-weight:600;
+}
+.out-btn:hover { background:var(--surf4); color:var(--text); }
+
+.console {
+  padding: 8px 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; line-height:1.7;
+  overflow-y: auto;
+  height: 160px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cl { display:block; }
+.cl.n { color: var(--text); }
+.cl.ok { color: var(--ok); }
+.cl.er { color: var(--err); }
+.cl.in { color: var(--acc); }
+.cl.wn { color: var(--warn); }
+.cl.cm { color: var(--cmt); font-style:italic; }
+
+.stdin-bar {
+  display:flex; align-items:center; gap:8px;
+  border-top: 1px solid var(--border);
+  padding: 5px 10px;
+}
+.stdin-lbl { color:var(--acc); font-size:11px; font-weight:700; font-family:'JetBrains Mono',monospace; white-space:nowrap; }
+.stdin-inp {
+  flex:1; background:var(--surf3); border:1px solid var(--border);
+  border-radius:4px; padding:4px 8px;
+  color:var(--text); font-family:'JetBrains Mono',monospace; font-size:12px;
+  outline:none; user-select:text; -webkit-user-select:text;
+}
+.stdin-inp:focus { border-color:var(--acc); }
+
+/* ── TOOLBAR ── */
+.kb-toolbar {
+  background: var(--surf2);
+  border-top: 1px solid var(--border);
+  padding: 5px 6px;
+  display: flex; gap:5px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.kb-toolbar::-webkit-scrollbar { display:none; }
+
+.kkey {
+  background: var(--surf3);
+  border: 1px solid var(--border2);
+  border-radius: 5px;
+  padding: 5px 9px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.12s;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.kkey:active { transform:scale(0.93); background:var(--acc); color:#000; border-color:var(--acc); }
+.kkey.kw { color:var(--kw); }
+.kkey.kt { color:var(--type); }
+.kkey.sy { color:var(--warn); }
+.kkey.fn { color:var(--fn); }
+
+/* ── STATUS BAR ── */
+.statusbar {
+  background: var(--acc2);
+  padding: 2px 10px;
+  display: flex; justify-content:space-between; align-items:center;
+  flex-shrink: 0;
+}
+.sb-text { font-size:10px; color:#000; font-weight:700; font-family:'JetBrains Mono',monospace; }
+
+/* ── LOADING BAR ── */
+.load-bar {
+  height: 2px;
+  background: linear-gradient(90deg, var(--acc), var(--acc3), var(--acc));
+  background-size: 200%;
+  animation: loadanim 0.8s linear infinite;
+  display: none;
+  flex-shrink: 0;
+}
+.load-bar.on { display:block; }
+@keyframes loadanim { 0%{background-position:200%} 100%{background-position:0%} }
+
+/* ── LEARN PANEL ── */
+.learn-panel {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+
+.learn-header {
+  font-size: 18px; font-weight: 800;
+  color: var(--acc); margin-bottom: 4px;
+}
+.learn-sub { font-size: 12px; color: var(--text3); margin-bottom: 14px; }
+
+.topic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.topic-card {
+  background: var(--surf2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.topic-card:hover { border-color: var(--acc); background:var(--surf3); }
+.topic-card:active { transform:scale(0.97); }
+
+.tc-icon { font-size:20px; margin-bottom:5px; }
+.tc-title { font-size:13px; font-weight:700; color:var(--text); }
+.tc-desc { font-size:10px; color:var(--text3); margin-top:2px; font-family:'JetBrains Mono',monospace; }
+.tc-level {
+  display:inline-block; margin-top:5px;
+  font-size:9px; font-weight:700; padding:2px 6px; border-radius:10px;
+}
+.tc-level.beg { background:rgba(0,230,118,0.15); color:var(--ok); }
+.tc-level.int { background:rgba(255,170,0,0.15); color:var(--warn); }
+.tc-level.adv { background:rgba(255,68,102,0.15); color:var(--err); }
+
+/* ── LESSON VIEW ── */
+.lesson-view {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+.lesson-view.open { display:flex; }
+
+.lesson-topbar {
+  background: var(--surf2);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 12px;
+  display: flex; align-items:center; gap:10px;
+}
+.back-btn {
+  background: var(--surf3); border:1px solid var(--border);
+  border-radius:6px; padding:5px 10px;
+  color:var(--text2); font-size:12px; cursor:pointer; font-weight:600;
+}
+.back-btn:hover { color:var(--text); }
+.lesson-title { font-size:15px; font-weight:800; color:var(--acc); flex:1; }
+
+.lesson-body {
+  flex:1; overflow-y:auto; padding:14px;
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+
+.lesson-section { margin-bottom:16px; }
+.ls-title { font-size:14px; font-weight:700; color:var(--acc3); margin-bottom:6px; letter-spacing:0.3px; }
+.ls-text { font-size:13px; color:var(--text2); line-height:1.6; }
+
+.code-block {
+  background: var(--surf1);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--acc);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.7;
+  margin: 8px 0;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.try-btn {
+  background: linear-gradient(135deg, var(--acc3), #00b894);
+  border: none; border-radius:7px;
+  padding: 8px 16px;
+  color: #000; font-weight:800; font-size:13px;
+  cursor:pointer; margin-top:8px; width:100%;
+  font-family:'Exo 2',sans-serif;
+}
+.try-btn:active { transform:scale(0.97); }
+
+.tip-box {
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius:8px; padding:10px 12px;
+  margin:8px 0; font-size:12px; color:var(--text2);
+  line-height:1.6;
+}
+.tip-box strong { color:var(--acc); }
+
+/* ── QUIZ PANEL ── */
+.quiz-wrap {
+  padding:14px; overflow-y:auto; flex:1;
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+.quiz-score-bar {
+  background:var(--surf2); border:1px solid var(--border);
+  border-radius:10px; padding:10px 14px;
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:14px;
+}
+.qs-label { font-size:12px; color:var(--text3); font-weight:600; }
+.qs-val { font-size:22px; font-weight:900; color:var(--acc); }
+.qs-streak { font-size:12px; color:var(--warn); font-weight:700; }
+
+.quiz-card {
+  background: var(--surf2);
+  border: 1px solid var(--border);
+  border-radius:12px; padding:14px;
+  margin-bottom:12px;
+}
+.qc-num { font-size:10px; color:var(--text3); font-weight:700; margin-bottom:6px; letter-spacing:1px; }
+.qc-q { font-size:14px; font-weight:700; color:var(--text); margin-bottom:10px; line-height:1.5; }
+.qc-code {
+  background:var(--surf1); border:1px solid var(--border);
+  border-radius:6px; padding:8px 10px;
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--text); margin-bottom:10px; overflow-x:auto;
+  white-space:pre; line-height:1.6;
+}
+.qc-opts { display:flex; flex-direction:column; gap:6px; }
+.qopt {
+  background:var(--surf3); border:1px solid var(--border);
+  border-radius:8px; padding:9px 12px;
+  cursor:pointer; font-size:13px; color:var(--text2);
+  transition:all 0.15s; font-weight:500;
+  text-align:left;
+}
+.qopt:hover:not(.disabled) { border-color:var(--acc); color:var(--text); }
+.qopt.correct { background:rgba(0,230,118,0.15); border-color:var(--ok); color:var(--ok); }
+.qopt.wrong { background:rgba(255,68,102,0.12); border-color:var(--err); color:var(--err); }
+.qopt.disabled { cursor:default; }
+
+.qc-explain {
+  display:none; margin-top:10px;
+  background:rgba(0,212,255,0.07); border:1px solid rgba(0,212,255,0.2);
+  border-radius:7px; padding:9px 11px;
+  font-size:12px; color:var(--text2); line-height:1.6;
+}
+.qc-explain.show { display:block; }
+.qc-explain strong { color:var(--acc); }
+
+/* ── SNIPPETS PANEL ── */
+.snip-panel {
+  padding:12px; overflow-y:auto; flex:1;
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+.snip-search {
+  background:var(--surf2); border:1px solid var(--border2);
+  border-radius:8px; padding:8px 12px;
+  color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px;
+  outline:none; width:100%; margin-bottom:12px;
+  user-select:text; -webkit-user-select:text;
+}
+.snip-search:focus { border-color:var(--acc); }
+.snip-search::placeholder { color:var(--text3); }
+
+.snip-cat { font-size:11px; font-weight:800; color:var(--text3); letter-spacing:1.5px; margin:10px 0 6px; }
+
+.snip-card {
+  background:var(--surf2); border:1px solid var(--border);
+  border-radius:8px; padding:10px 12px;
+  margin-bottom:7px; cursor:pointer; transition:all 0.15s;
+  display:flex; align-items:center; gap:10px;
+}
+.snip-card:hover { border-color:var(--acc); background:var(--surf3); }
+.snip-card:active { transform:scale(0.98); }
+.snip-icon { font-size:18px; flex-shrink:0; }
+.snip-info { flex:1; min-width:0; }
+.snip-name { font-size:13px; font-weight:700; color:var(--text); }
+.snip-desc { font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; margin-top:1px; }
+.snip-tag {
+  font-size:10px; padding:2px 6px; border-radius:10px; font-weight:700; flex-shrink:0;
+}
+.snip-tag.beg { background:rgba(0,230,118,0.15); color:var(--ok); }
+.snip-tag.int { background:rgba(255,170,0,0.15); color:var(--warn); }
+.snip-tag.adv { background:rgba(255,68,102,0.15); color:var(--err); }
+
+/* ── CHALLENGES PANEL ── */
+.chal-panel {
+  padding:12px; overflow-y:auto; flex:1;
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+.chal-card {
+  background:var(--surf2); border:1px solid var(--border);
+  border-radius:10px; padding:12px; margin-bottom:9px; cursor:pointer;
+  transition:all 0.15s; position:relative; overflow:hidden;
+}
+.chal-card::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
+}
+.chal-card.easy::before { background:var(--ok); }
+.chal-card.med::before { background:var(--warn); }
+.chal-card.hard::before { background:var(--err); }
+.chal-card:hover { border-color:var(--border2); background:var(--surf3); }
+
+.cc-top { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.cc-num { font-size:10px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+.cc-title { font-size:14px; font-weight:700; color:var(--text); flex:1; }
+.cc-diff {
+  font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px;
+}
+.easy .cc-diff { background:rgba(0,230,118,0.15); color:var(--ok); }
+.med .cc-diff { background:rgba(255,170,0,0.15); color:var(--warn); }
+.hard .cc-diff { background:rgba(255,68,102,0.15); color:var(--err); }
+
+.cc-desc { font-size:12px; color:var(--text2); line-height:1.5; }
+.cc-tags { display:flex; gap:5px; margin-top:7px; flex-wrap:wrap; }
+.cc-tag {
+  font-size:10px; padding:2px 7px; border-radius:10px;
+  background:var(--surf4); color:var(--text3); font-family:'JetBrains Mono',monospace;
+}
+.cc-done { color:var(--ok); font-size:14px; }
+
+/* ── CHALLENGE DETAIL ── */
+.chal-detail {
+  display:none; flex-direction:column; flex:1; overflow:hidden;
+}
+.chal-detail.open { display:flex; }
+.cd-body { flex:1; overflow-y:auto; padding:12px; scrollbar-width:thin; scrollbar-color:var(--border2) transparent; }
+.cd-title { font-size:16px; font-weight:800; color:var(--acc); margin-bottom:4px; }
+.cd-meta { font-size:11px; color:var(--text3); margin-bottom:12px; }
+.cd-section { margin-bottom:12px; }
+.cd-label { font-size:11px; font-weight:700; color:var(--acc3); letter-spacing:1px; margin-bottom:5px; }
+.cd-text { font-size:13px; color:var(--text2); line-height:1.6; }
+.hint-btn {
+  background:rgba(255,170,0,0.1); border:1px solid rgba(255,170,0,0.3);
+  border-radius:7px; padding:7px 12px; color:var(--warn);
+  font-size:12px; font-weight:700; cursor:pointer; margin-top:8px;
+  font-family:'Exo 2',sans-serif; width:100%;
+}
+.hint-box {
+  display:none; margin-top:8px; background:rgba(255,170,0,0.07);
+  border:1px solid rgba(255,170,0,0.2); border-radius:7px; padding:9px 11px;
+  font-size:12px; color:var(--text2); line-height:1.6;
+}
+.hint-box.show { display:block; }
+.solve-btn {
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+  border:none; border-radius:8px; padding:10px;
+  color:#000; font-weight:800; font-size:14px;
+  cursor:pointer; width:100%; margin-top:10px;
+  font-family:'Exo 2',sans-serif;
+  letter-spacing:0.5px;
+}
+.solve-btn:active { transform:scale(0.97); }
+
+/* ── PROGRESS PANEL ── */
+.prog-panel {
+  padding:14px; overflow-y:auto; flex:1;
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+.prog-hero {
+  background:linear-gradient(135deg,var(--surf2),var(--surf3));
+  border:1px solid var(--border2); border-radius:14px;
+  padding:18px; text-align:center; margin-bottom:16px;
+  position:relative; overflow:hidden;
+}
+.prog-hero::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(circle at 50% 0%, rgba(0,212,255,0.08), transparent 60%);
+}
+.prog-avatar {
+  font-size:42px; margin-bottom:8px;
+}
+.prog-name { font-size:18px; font-weight:800; color:var(--text); }
+.prog-title { font-size:12px; color:var(--acc); font-weight:600; margin-top:2px; }
+.prog-xp {
+  display:flex; align-items:center; gap:8px; margin-top:12px;
+  justify-content:center;
+}
+.xp-bar-wrap {
+  flex:1; max-width:200px;
+  background:var(--surf1); border-radius:10px; height:8px;
+  overflow:hidden;
+}
+.xp-bar { height:100%; background:linear-gradient(90deg,var(--acc),var(--acc3)); border-radius:10px; transition:width 0.5s; }
+.xp-text { font-size:11px; color:var(--acc); font-weight:700; font-family:'JetBrains Mono',monospace; }
+
+.stats-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px;
+}
+.stat-box {
+  background:var(--surf2); border:1px solid var(--border);
+  border-radius:10px; padding:12px 8px; text-align:center;
+}
+.stat-val { font-size:22px; font-weight:900; color:var(--acc); line-height:1; }
+.stat-lbl { font-size:10px; color:var(--text3); margin-top:3px; font-weight:600; }
+
+.badge-section { margin-bottom:16px; }
+.badge-title { font-size:13px; font-weight:800; color:var(--text2); margin-bottom:8px; letter-spacing:0.5px; }
+.badge-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.badge-item {
+  background:var(--surf2); border:1px solid var(--border);
+  border-radius:10px; padding:10px 6px; text-align:center;
+  transition:all 0.2s;
+}
+.badge-item.earned { border-color:var(--acc); background:rgba(0,212,255,0.07); }
+.badge-item.earned .bi-icon { filter:none; }
+.bi-icon { font-size:22px; filter:grayscale(1) opacity(0.3); }
+.bi-name { font-size:9px; color:var(--text3); margin-top:3px; font-weight:600; }
+.badge-item.earned .bi-name { color:var(--acc); }
+
+/* ── CHEAT SHEET ── */
+.cheat-panel {
+  padding:12px; overflow-y:auto; flex:1;
+  scrollbar-width:thin; scrollbar-color:var(--border2) transparent;
+}
+.cs-section { margin-bottom:14px; }
+.cs-title {
+  font-size:12px; font-weight:800; color:var(--acc3);
+  letter-spacing:1.5px; margin-bottom:6px; padding-bottom:4px;
+  border-bottom:1px solid var(--border);
+}
+.cs-row {
+  display:flex; gap:8px; margin-bottom:5px; align-items:flex-start;
+}
+.cs-code {
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--fn); background:var(--surf2); border:1px solid var(--border);
+  border-radius:4px; padding:3px 7px; flex-shrink:0; white-space:nowrap;
+}
+.cs-desc { font-size:11px; color:var(--text3); line-height:1.5; padding-top:2px; }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--surf3); border:1px solid var(--border2);
+  border-radius:10px; padding:10px 18px;
+  font-size:13px; font-weight:600; color:var(--text);
+  opacity:0; transition:all 0.3s; z-index:999; white-space:nowrap;
+  pointer-events:none;
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.toast.ok-toast { border-color:var(--ok); color:var(--ok); }
+.toast.err-toast { border-color:var(--err); color:var(--err); }
+
+/* ── MODAL ── */
+.modal-bg {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.75); z-index:200;
+  align-items:flex-end;
+}
+.modal-bg.open { display:flex; }
+.modal-box {
+  background:var(--surf1); border-top:2px solid var(--acc);
+  border-radius:18px 18px 0 0; width:100%; padding:16px;
+  max-height:75vh; overflow-y:auto;
+}
+.modal-hdr { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.modal-title-text { font-size:15px; font-weight:800; color:var(--acc); }
+.modal-close {
+  background:var(--surf3); border:1px solid var(--border); border-radius:6px;
+  padding:4px 10px; color:var(--text2); font-size:13px; cursor:pointer;
+}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar { width:3px; height:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-box">J</div>
+    <div>
+      <div class="logo-text">JavaDroid</div>
+      <div class="logo-ver">v2.0 EDU</div>
+    </div>
+  </div>
+  <div class="file-tab">
+    <div class="file-dot" id="fileDot"></div>
+    <div class="file-name">Main.java</div>
+  </div>
+  <div class="top-btns">
+    <div class="icon-btn" onclick="saveCode()" title="Save">💾</div>
+    <div class="icon-btn" onclick="shareCode()" title="Share">🔗</div>
+    <button class="run-btn" id="runBtn" onclick="runCode()">▶ RUN</button>
+  </div>
+</div>
+
+<!-- LOAD BAR -->
+<div class="load-bar" id="loadBar"></div>
+
+<!-- NAV TABS -->
+<div class="nav-tabs">
+  <div class="ntab active" onclick="switchTab('editor')" id="tab-editor">📝 Editor</div>
+  <div class="ntab" onclick="switchTab('learn')" id="tab-learn">📚 Learn</div>
+  <div class="ntab" onclick="switchTab('quiz')" id="tab-quiz">🧠 Quiz <span class="badge" id="quizBadge">10</span></div>
+  <div class="ntab" onclick="switchTab('snippets')" id="tab-snippets">⚡ Snippets</div>
+  <div class="ntab" onclick="switchTab('challenges')" id="tab-challenges">🏆 Challenges</div>
+  <div class="ntab" onclick="switchTab('cheatsheet')" id="tab-cheatsheet">📋 Cheat Sheet</div>
+  <div class="ntab" onclick="switchTab('progress')" id="tab-progress">⭐ Progress</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     EDITOR PANEL
+══════════════════════════════════════════ -->
+<div class="panel active" id="panel-editor">
+  <div class="editor-area">
+    <div class="gutter" id="gutter">1</div>
+    <textarea class="editor" id="editor" spellcheck="false" autocorrect="off" autocapitalize="off"
+      oninput="onEdit()" onkeydown="handleKey(event)" onscroll="syncGutter()" onclick="updateStatus()" onkeyup="updateStatus()">public class Main {
+    public static void main(String[] args) {
+        // 🎉 Welcome to JavaDroid v2.0!
+        // Edit code below and press ▶ RUN
+        
+        System.out.println("Hello, JavaDroid v2.0!");
+        
+        String name = "Learner";
+        int year = 2026;
+        
+        System.out.println("Welcome, " + name + "!");
+        System.out.println("Year: " + year);
+        
+        // Loop example
+        for (int i = 1; i <= 5; i++) {
+            System.out.println("Step " + i + " complete ✓");
+        }
+        
+        System.out.println("Happy coding! 🚀");
+    }
+}</textarea>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-wrap">
+    <div class="output-hdr" onclick="toggleConsole()">
+      <div class="status-dot" id="statusDot"></div>
+      <div class="out-title">CONSOLE OUTPUT</div>
+      <div class="out-acts">
+        <button class="out-btn" onclick="clearConsole(event)">Clear</button>
+        <button class="out-btn" onclick="copyOutput(event)">Copy</button>
+        <span style="color:var(--text3);font-size:12px" id="consoleToggle">▼</span>
+      </div>
+    </div>
+    <div class="console" id="console">
+      <span class="cl cm">// JavaDroid v2.0 ready — press ▶ RUN to execute your code</span>
+    </div>
+    <div class="stdin-bar">
+      <span class="stdin-lbl">▶ stdin:</span>
+      <input class="stdin-inp" id="stdinInp" placeholder="Input for Scanner.nextLine() / nextInt() ..." />
+    </div>
+  </div>
+
+  <!-- KEYBOARD TOOLBAR -->
+  <div class="kb-toolbar">
+    <div class="kkey kw" onclick="ins('public ')">public</div>
+    <div class="kkey kw" onclick="ins('private ')">private</div>
+    <div class="kkey kw" onclick="ins('static ')">static</div>
+    <div class="kkey kw" onclick="ins('class ')">class</div>
+    <div class="kkey kw" onclick="ins('void ')">void</div>
+    <div class="kkey kw" onclick="ins('new ')">new</div>
+    <div class="kkey kw" onclick="ins('return ')">return</div>
+    <div class="kkey kw" onclick="ins('if () {\n    \n}')">if</div>
+    <div class="kkey kw" onclick="ins('else {\n    \n}')">else</div>
+    <div class="kkey kw" onclick="ins('for (int i = 0; i < n; i++) {\n    \n}')">for</div>
+    <div class="kkey kw" onclick="ins('while () {\n    \n}')">while</div>
+    <div class="kkey kw" onclick="ins('try {\n    \n} catch (Exception e) {\n    \n}')">try</div>
+    <div class="kkey kt" onclick="ins('int ')">int</div>
+    <div class="kkey kt" onclick="ins('String ')">String</div>
+    <div class="kkey kt" onclick="ins('double ')">double</div>
+    <div class="kkey kt" onclick="ins('boolean ')">bool</div>
+    <div class="kkey kt" onclick="ins('char ')">char</div>
+    <div class="kkey kt" onclick="ins('long ')">long</div>
+    <div class="kkey fn" onclick="ins('System.out.println()')">println</div>
+    <div class="kkey fn" onclick="ins('System.out.print()')">print</div>
+    <div class="kkey fn" onclick="ins('Math.abs()')">Math</div>
+    <div class="kkey sy" onclick="ins('{')">{ </div>
+    <div class="kkey sy" onclick="ins('}')">}</div>
+    <div class="kkey sy" onclick="ins('()')">( )</div>
+    <div class="kkey sy" onclick="ins(';')">;</div>
+    <div class="kkey sy" onclick="ins('[]')">[ ]</div>
+    <div class="kkey sy" onclick="ins('\"\"')">""</div>
+    <div class="kkey sy" onclick="ins(' == ')">&nbsp;==&nbsp;</div>
+    <div class="kkey sy" onclick="ins(' != ')">&nbsp;!=&nbsp;</div>
+    <div class="kkey sy" onclick="ins(' && ')">&nbsp;&&</div>
+    <div class="kkey sy" onclick="ins(' || ')">&nbsp;||</div>
+    <div class="kkey" onclick="ins('    ')">⇥ Tab</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     LEARN PANEL
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-learn">
+  <!-- Topic Browser -->
+  <div class="learn-panel" id="learnBrowser">
+    <div class="learn-header">📚 Java Lessons</div>
+    <div class="learn-sub">Tap a topic to start learning with examples</div>
+    <div class="topic-grid" id="topicGrid"></div>
+  </div>
+  <!-- Lesson View -->
+  <div class="lesson-view" id="lessonView">
+    <div class="lesson-topbar">
+      <button class="back-btn" onclick="closelesson()">← Back</button>
+      <div class="lesson-title" id="lessonTitle"></div>
+    </div>
+    <div class="lesson-body" id="lessonBody"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     QUIZ PANEL
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-quiz">
+  <div class="quiz-wrap">
+    <div class="quiz-score-bar">
+      <div>
+        <div class="qs-label">TOTAL SCORE</div>
+        <div class="qs-val" id="quizScore">0</div>
+      </div>
+      <div style="text-align:right">
+        <div class="qs-streak" id="streakText">🔥 Streak: 0</div>
+        <div class="qs-label" id="answeredText">0 / 10 answered</div>
+      </div>
+    </div>
+    <div id="quizContainer"></div>
+    <button onclick="resetQuiz()" style="width:100%;background:var(--surf3);border:1px solid var(--border2);border-radius:8px;padding:10px;color:var(--text2);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px;">🔄 Reset Quiz</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SNIPPETS PANEL
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-snippets">
+  <div class="snip-panel">
+    <input class="snip-search" id="snipSearch" placeholder="🔍 Search snippets..." oninput="filterSnippets()" />
+    <div id="snippetList"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHALLENGES PANEL
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-challenges">
+  <div class="chal-panel" id="chalBrowser">
+    <div style="font-size:18px;font-weight:800;color:var(--acc);margin-bottom:4px">🏆 Coding Challenges</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Solve problems to earn XP & badges</div>
+    <div id="chalList"></div>
+  </div>
+  <div class="chal-detail" id="chalDetail">
+    <div class="lesson-topbar">
+      <button class="back-btn" onclick="closeChal()">← Back</button>
+      <div class="lesson-title" id="chalDetailTitle"></div>
+    </div>
+    <div class="cd-body" id="chalDetailBody"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CHEAT SHEET PANEL
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-cheatsheet">
+  <div class="cheat-panel" id="cheatContent"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PROGRESS PANEL
+══════════════════════════════════════════ -->
+<div class="panel" id="panel-progress">
+  <div class="prog-panel" id="progressContent"></div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <span class="sb-text" id="sb1">READY • Java SE 11</span>
+  <span class="sb-text" id="sb2">Ln 1, Col 1</span>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let state = {
+  xp: 0, streak: 0, quizScore: 0,
+  answered: 0, runsTotal: 0,
+  chalDone: new Set(),
+  badges: new Set(),
+  consoleOpen: true,
+  unsaved: false
+};
+
+// ═══════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// EDITOR
+// ═══════════════════════════════════════════
+function onEdit() {
+  updateGutter(); updateStatus();
+  state.unsaved = true;
+  document.getElementById('fileDot').classList.add('unsaved');
+}
+
+function updateGutter() {
+  const lines = document.getElementById('editor').value.split('\n').length;
+  document.getElementById('gutter').innerHTML =
+    Array.from({length: lines}, (_, i) => i + 1).join('<br>');
+}
+
+function syncGutter() {
+  document.getElementById('gutter').scrollTop = document.getElementById('editor').scrollTop;
+}
+
+function updateStatus() {
+  const ed = document.getElementById('editor');
+  const text = ed.value.substring(0, ed.selectionStart);
+  const lines = text.split('\n');
+  document.getElementById('sb2').textContent = `Ln ${lines.length}, Col ${lines[lines.length-1].length+1}`;
+}
+
+function handleKey(e) {
+  if (e.key === 'Tab') { e.preventDefault(); ins('    '); }
+  setTimeout(updateStatus, 0);
+}
+
+function ins(text) {
+  const ed = document.getElementById('editor');
+  ed.focus();
+  const s = ed.selectionStart, en = ed.selectionEnd;
+  ed.value = ed.value.substring(0,s) + text + ed.value.substring(en);
+  ed.selectionStart = ed.selectionEnd = s + text.length;
+  onEdit();
+}
+
+function saveCode() {
+  localStorage.setItem('jd_code', document.getElementById('editor').value);
+  state.unsaved = false;
+  document.getElementById('fileDot').classList.remove('unsaved');
+  showToast('💾 Code saved!', 'ok');
+  addXP(5);
+}
+
+function shareCode() {
+  const code = document.getElementById('editor').value;
+  if (navigator.share) {
+    navigator.share({ title: 'JavaDroid Code', text: code });
+  } else {
+    navigator.clipboard.writeText(code).then(() => showToast('📋 Code copied to clipboard!', 'ok'));
+  }
+}
+
+// ═══════════════════════════════════════════
+// CONSOLE
+// ═══════════════════════════════════════════
+function toggleConsole() {
+  state.consoleOpen = !state.consoleOpen;
+  const c = document.getElementById('console');
+  const bar = document.querySelector('.stdin-bar');
+  c.style.display = state.consoleOpen ? 'block' : 'none';
+  bar.style.display = state.consoleOpen ? 'flex' : 'none';
+  document.getElementById('consoleToggle').textContent = state.consoleOpen ? '▼' : '▲';
+}
+
+function clearConsole(e) {
+  e && e.stopPropagation();
+  document.getElementById('console').innerHTML = '<span class="cl cm">// Console cleared.</span>';
+  setDot('');
+}
+
+function copyOutput(e) {
+  e && e.stopPropagation();
+  const text = document.getElementById('console').innerText;
+  navigator.clipboard.writeText(text).then(() => showToast('📋 Output copied!', 'ok'));
+}
+
+function addLine(type, text) {
+  const el = document.createElement('span');
+  el.className = 'cl ' + type;
+  el.textContent = text;
+  const c = document.getElementById('console');
+  c.appendChild(el);
+  c.appendChild(document.createElement('br'));
+  c.scrollTop = c.scrollHeight;
+}
+
+function setDot(s) {
+  const d = document.getElementById('statusDot');
+  d.className = 'status-dot' + (s ? ' ' + s : '');
+}
+
+// ═══════════════════════════════════════════
+// RUN CODE
+// ═══════════════════════════════════════════
+function runCode() {
+  const code = document.getElementById('editor').value.trim();
+  const stdin = document.getElementById('stdinInp').value;
+  const btn = document.getElementById('runBtn');
+  const bar = document.getElementById('loadBar');
+
+  if (!code) { showToast('⚠️ Nothing to run!', 'err'); return; }
+
+  btn.textContent = '⏳ Running...';
+  btn.classList.add('running');
+  bar.classList.add('on');
+  setDot('run');
+  document.getElementById('console').innerHTML = '';
+  addLine('in', '$ javac Main.java && java Main');
+  addLine('in', '─'.repeat(38));
+
+  if (!state.consoleOpen) toggleConsole();
+
+  setTimeout(() => {
+    try {
+      const out = javaSimulator(code, stdin);
+      out.forEach(l => addLine(l.t, l.v));
+      setDot('ok');
+      state.runsTotal++;
+      addXP(10);
+      document.getElementById('sb1').textContent = `✓ Exit 0 • ${state.runsTotal} runs`;
+      if (state.runsTotal === 1) earnBadge('first_run');
+      if (state.runsTotal >= 10) earnBadge('ten_runs');
+      updateProgressUI();
+    } catch(err) {
+      addLine('er', '✗ ' + err.message);
+      setDot('err');
+      document.getElementById('sb1').textContent = '✗ Compilation Error';
+    }
+    btn.textContent = '▶ RUN';
+    btn.classList.remove('running');
+    bar.classList.remove('on');
+  }, 500);
+}
+
+// ═══════════════════════════════════════════
+// JAVA SIMULATOR ENGINE
+// ═══════════════════════════════════════════
+function javaSimulator(code, stdinRaw) {
+  const out = [];
+  const stdinLines = stdinRaw ? stdinRaw.split('\n') : [];
+  let stdinIdx = 0;
+  const vars = {};
+
+  if (!code.includes('public static void main')) throw new Error("Missing main method");
+  const brO = (code.match(/{/g)||[]).length, brC = (code.match(/}/g)||[]).length;
+  if (Math.abs(brO - brC) > 1) throw new Error("Mismatched braces { }");
+
+  const mainM = code.match(/void main\s*\([^)]*\)\s*\{([\s\S]*)/);
+  if (!mainM) throw new Error("Cannot parse main method");
+  let body = mainM[1];
+  // strip last }
+  body = body.substring(0, body.lastIndexOf('}'));
+
+  function evalE(expr) {
+    expr = (expr||'').trim().replace(/;$/, '');
+    if (!expr) return '';
+    if (expr.startsWith('"') && expr.endsWith('"')) return expr.slice(1,-1);
+    if (expr === 'true') return true;
+    if (expr === 'false') return false;
+    if (!isNaN(expr) && expr !== '') return Number(expr);
+    if (expr.endsWith('.length()')) { const v=vars[expr.replace('.length()','')]; return typeof v==='string'?v.length:0; }
+    if (expr.endsWith('.length')) { const v=vars[expr.replace('.length','')]; return Array.isArray(v)?v.length:0; }
+    if (expr.includes('.toUpperCase()')) return String(evalE(expr.replace('.toUpperCase()',''))).toUpperCase();
+    if (expr.includes('.toLowerCase()')) return String(evalE(expr.replace('.toLowerCase()',''))).toLowerCase();
+    if (expr.match(/Math\.(abs|sqrt|pow|max|min|floor|ceil|round)/)) {
+      const m = expr.match(/Math\.(\w+)\((.+)\)/);
+      if (m) {
+        const args = m[2].split(',').map(a => Number(evalE(a.trim())));
+        return Math[m[1]](...args);
+      }
+    }
+    if (vars[expr] !== undefined) return vars[expr];
+    // array access
+    const arrAcc = expr.match(/^(\w+)\[(.+)\]$/);
+    if (arrAcc) { const arr=vars[arrAcc[1]]; const idx=Number(evalE(arrAcc[2])); return Array.isArray(arr)?arr[idx]:undefined; }
+    // String concat +
+    const parts = splitPlus(expr);
+    if (parts.length > 1) return parts.map(p => { const v=evalE(p.trim()); return v===undefined?'null':String(v); }).join('');
+    // arithmetic
+    const arith = expr.match(/^(.+?)\s*([+\-*\/%])\s*(.+)$/);
+    if (arith) {
+      const l=evalE(arith[1]), r=evalE(arith[3]), op=arith[2];
+      if (op==='+') return (typeof l==='string'||typeof r==='string') ? String(l)+String(r) : l+r;
+      if (op==='-') return Number(l)-Number(r);
+      if (op==='*') return Number(l)*Number(r);
+      if (op==='/') return Number(l)/Number(r);
+      if (op==='%') return Number(l)%Number(r);
+    }
+    return expr;
+  }
+
+  function splitPlus(expr) {
+    const parts=[], str=[]; let depth=0, inStr=false, cur='';
+    for (const ch of expr) {
+      if (ch==='"' && !inStr){inStr=true;cur+=ch;continue;}
+      if (ch==='"' && inStr){inStr=false;cur+=ch;continue;}
+      if (inStr){cur+=ch;continue;}
+      if (ch==='(') depth++;
+      if (ch===')') depth--;
+      if (ch==='+' && depth===0){parts.push(cur);cur='';continue;}
+      cur+=ch;
+    }
+    if (cur) parts.push(cur);
+    return parts;
+  }
+
+  function evalCond(cond) {
+    cond = cond.trim();
+    for (const [op,fn] of [['>=','>='],['>','>'],['<=','<='],['<','<'],['!=','!='],['==','==']]) {
+      if (cond.includes(op)) {
+        const i=cond.indexOf(op), l=evalE(cond.slice(0,i)), r=evalE(cond.slice(i+op.length));
+        if (op==='>=') return l>=r; if (op==='>') return l>r;
+        if (op==='<=') return l<=r; if (op==='<') return l<r;
+        if (op==='!=') return l!=r; if (op==='==') return l==r;
+      }
+    }
+    if (cond.includes('&&')) { const [a,b]=cond.split('&&'); return evalCond(a)&&evalCond(b); }
+    if (cond.includes('||')) { const [a,b]=cond.split('||'); return evalCond(a)||evalCond(b); }
+    return Boolean(evalE(cond));
+  }
+
+  function collectBody(lines, start) {
+    let depth=0, started=false, body=[];
+    for (let j=start; j<lines.length; j++) {
+      for (const ch of lines[j]) { if(ch==='{'){depth++;started=true;} if(ch==='}')depth--; }
+      if (started&&depth===0) break;
+      if (started&&depth>0) body.push(lines[j]);
+    }
+    return body;
+  }
+
+  function skipTo(lines, start) {
+    let depth=0, started=false;
+    for (let j=start; j<lines.length; j++) {
+      for (const ch of lines[j]) { if(ch==='{'){depth++;started=true;} if(ch==='}')depth--; }
+      if (started&&depth===0) return j+1;
+    }
+    return lines.length;
+  }
+
+  function run(lines) {
+    let i=0;
+    while (i<lines.length) {
+      let line = lines[i].trim();
+      if (!line||line.startsWith('//')||line.startsWith('import ')||line==='{') { i++; continue; }
+      // multi-line comment
+      if (line.startsWith('/*')) { while(i<lines.length&&!lines[i].includes('*/'))i++; i++;continue; }
+
+      // println / print
+      if (line.match(/System\.out\.print(?:ln)?\s*\(/)) {
+        const isLn = line.includes('println');
+        const inner = line.replace(/System\.out\.print(?:ln)?\s*\(/, '').replace(/\);\s*$/, '').trim();
+        const val = evalE(inner);
+        out.push({t:'n', v: String(val===undefined?'null':val)});
+        i++; continue;
+      }
+
+      // Scanner nextLine / next / nextInt / nextDouble
+      const scanAssign = line.match(/(\w+)\s*=\s*sc\.next(?:Line|Int|Double|Float|Long)?\(\)/);
+      if (scanAssign) {
+        const input = stdinLines[stdinIdx++] || '0';
+        vars[scanAssign[1]] = isNaN(input) ? input : Number(input);
+        i++; continue;
+      }
+
+      // Variable declaration with type
+      const declM = line.match(/^(?:int|double|float|long|String|boolean|char|var)\s+(\w+)\s*=\s*(.+);$/);
+      if (declM) { vars[declM[1]] = evalE(declM[2]); i++; continue; }
+
+      // Array declaration
+      const arrDecl = line.match(/^(?:int|double|String|char)\[\]\s*(\w+)\s*=\s*\{(.+)\};$/);
+      if (arrDecl) { vars[arrDecl[1]] = arrDecl[2].split(',').map(v=>evalE(v.trim())); i++; continue; }
+
+      // new int[n] array
+      const newArr = line.match(/^(?:int|double|String)\[\]\s*(\w+)\s*=\s*new\s+\w+\[(.+)\];$/);
+      if (newArr) { vars[newArr[1]] = new Array(Number(evalE(newArr[2]))).fill(0); i++; continue; }
+
+      // Assignment (no type)
+      const assignM = line.match(/^(\w+(?:\[\d+\])?)\s*=\s*(.+);$/);
+      if (assignM && !assignM[1].startsWith('public') && !assignM[1].startsWith('class')) {
+        const key=assignM[1], val=evalE(assignM[2]);
+        const arrIdx = key.match(/^(\w+)\[(\d+)\]$/);
+        if (arrIdx && Array.isArray(vars[arrIdx[1]])) vars[arrIdx[1]][Number(arrIdx[2])]=val;
+        else vars[key]=val;
+        i++; continue;
+      }
+
+      // Compound assignment +=, -=, *=, /=
+      const compM = line.match(/^(\w+)\s*([+\-*\/])=\s*(.+);$/);
+      if (compM) {
+        const v=compM[1], op=compM[2], val=evalE(compM[3]);
+        if(op==='+') vars[v]=typeof vars[v]==='string'?vars[v]+String(val):(vars[v]||0)+Number(val);
+        else if(op==='-') vars[v]=(vars[v]||0)-Number(val);
+        else if(op==='*') vars[v]=(vars[v]||0)*Number(val);
+        else if(op==='/') vars[v]=(vars[v]||0)/Number(val);
+        i++; continue;
+      }
+
+      // i++ / i--
+      const incrM = line.match(/^(\w+)(\+\+|--);?$/);
+      if (incrM) { if(incrM[2]==='++')vars[incrM[1]]=(vars[incrM[1]]||0)+1; else vars[incrM[1]]=(vars[incrM[1]]||0)-1; i++; continue; }
+
+      // for loop
+      const forM = line.match(/^for\s*\(\s*(?:int\s+)?(\w+)\s*=\s*(.+?);\s*(.+?);\s*(.+?)\s*\)/);
+      if (forM) {
+        const vn=forM[1]; vars[vn]=Number(evalE(forM[2]));
+        const cond=forM[3], upd=forM[4];
+        const body=collectBody(lines,i);
+        let safety=0;
+        while(evalCond(cond) && safety++<2000) {
+          run(body);
+          if(upd.includes('++'))vars[vn]++;
+          else if(upd.includes('--'))vars[vn]--;
+          else { const u=upd.match(/(\w+)\s*([+\-*\/])=\s*(.+)/); if(u){const val=Number(evalE(u[3]));if(u[2]==='+')vars[u[1]]+=val;else if(u[2]==='-')vars[u[1]]-=val;else if(u[2]==='*')vars[u[1]]*=val;else if(u[2]==='/')vars[u[1]]/=val;}}
+        }
+        i=skipTo(lines,i); continue;
+      }
+
+      // for-each
+      const feM = line.match(/^for\s*\(\s*\w+\s+(\w+)\s*:\s*(\w+)\s*\)/);
+      if (feM) {
+        const el=feM[1], arrN=feM[2];
+        const arr=vars[arrN]||[];
+        const body=collectBody(lines,i);
+        for (const item of arr) { vars[el]=item; run(body); }
+        i=skipTo(lines,i); continue;
+      }
+
+      // while
+      const whileM = line.match(/^while\s*\((.+)\)/);
+      if (whileM) {
+        const body=collectBody(lines,i); let safety=0;
+        while(evalCond(whileM[1])&&safety++<2000) run(body);
+        i=skipTo(lines,i); continue;
+      }
+
+      // do-while
+      if (line.startsWith('do')) {
+        const body=collectBody(lines,i);
+        const end=skipTo(lines,i);
+        const wcond=(lines[end-1]||'').match(/while\s*\((.+)\)/);
+        let safety=0;
+        do { run(body); safety++; }
+        while(wcond&&evalCond(wcond[1])&&safety<2000);
+        i=end; continue;
+      }
+
+      // if / else if / else
+      const ifM = line.match(/^if\s*\((.+)\)/);
+      if (ifM) {
+        const cond=evalCond(ifM[1]);
+        const body=collectBody(lines,i);
+        if(cond) run(body);
+        let next=skipTo(lines,i);
+        while(next<lines.length) {
+          const nl=(lines[next]||'').trim();
+          if(nl.startsWith('else if')) {
+            const eiM=nl.match(/else if\s*\((.+)\)/);
+            if(!cond&&eiM&&evalCond(eiM[1])) run(collectBody(lines,next));
+            next=skipTo(lines,next);
+          } else if(nl.startsWith('else')) {
+            if(!cond) run(collectBody(lines,next));
+            next=skipTo(lines,next); break;
+          } else break;
+        }
+        i=next; continue;
+      }
+
+      // switch
+      const swM = line.match(/^switch\s*\((.+)\)/);
+      if (swM) {
+        const val=String(evalE(swM[1]));
+        const body=collectBody(lines,i);
+        let matched=false, fell=false;
+        let j=0;
+        while(j<body.length) {
+          const bl=body[j].trim();
+          const caseM=bl.match(/^case\s+['"]?(.+?)['"]?\s*:/);
+          if(caseM) { if(caseM[1]===val||fell){matched=true;fell=true;} j++;continue; }
+          if(bl==='default:'){matched=true;fell=true;j++;continue;}
+          if(bl==='break;'){fell=false;j++;continue;}
+          if(fell) {
+            if(bl.match(/System\.out\.print(?:ln)?\s*\(/)){
+              const isLn=bl.includes('println');
+              const inner=bl.replace(/System\.out\.print(?:ln)?\s*\(/,'').replace(/\);\s*$/,'').trim();
+              out.push({t:'n',v:String(evalE(inner))});
+            }
+          }
+          j++;
+        }
+        i=skipTo(lines,i); continue;
+      }
+
+      i++;
+    }
+  }
+
+  run(body.split('\n'));
+
+  if (!out.length) out.push({t:'in', v:'(No output)'});
+  out.push({t:'in', v:'─'.repeat(38)});
+  out.push({t:'ok', v:'✓ Process finished — exit code 0'});
+  return out;
+}
+
+// ═══════════════════════════════════════════
+// LESSONS DATA
+// ═══════════════════════════════════════════
+const topics = [
+  { id:'vars', icon:'📦', title:'Variables & Types', desc:'int, String, double...', level:'beg',
+    content: [
+      { h:'What are Variables?', t:'A variable stores data in memory. In Java, you must declare the type.', code:'int age = 20;\nString name = "Arnab";\ndouble gpa = 3.8;\nboolean isStudent = true;\n\nSystem.out.println(name + " is " + age);', run:'int age = 20;\nString name = "Arnab";\ndouble gpa = 3.8;\nboolean isStudent = true;\nSystem.out.println(name + " is " + age);\nSystem.out.println("GPA: " + gpa);' },
+      { h:'Tip', tip:'Java variable names are camelCase. Types: int (whole numbers), double (decimals), String (text), boolean (true/false), char (single character).' }
+    ]
+  },
+  { id:'ifelse', icon:'🔀', title:'If / Else', desc:'Conditional logic', level:'beg',
+    content: [
+      { h:'Conditional Statements', t:'Execute different code based on conditions.', code:'int score = 85;\nif (score >= 90) {\n    System.out.println("A Grade");\n} else if (score >= 80) {\n    System.out.println("B Grade");\n} else {\n    System.out.println("C Grade");\n}', run:'int score = 85;\nif (score >= 90) {\n    System.out.println("A Grade");\n} else if (score >= 80) {\n    System.out.println("B Grade");\n} else {\n    System.out.println("C Grade");\n}' },
+      { h:'Tip', tip:'Use == for equality check (not =). Use && for AND, || for OR, ! for NOT.' }
+    ]
+  },
+  { id:'loops', icon:'🔁', title:'Loops', desc:'for, while, do-while', level:'beg',
+    content: [
+      { h:'For Loop', t:'Repeat code a specific number of times.', code:'for (int i = 1; i <= 5; i++) {\n    System.out.println("Count: " + i);\n}', run:'for (int i = 1; i <= 5; i++) {\n    System.out.println("Count: " + i);\n}' },
+      { h:'While Loop', t:'Repeat while a condition is true.', code:'int n = 1;\nwhile (n <= 5) {\n    System.out.println("n = " + n);\n    n++;\n}', run:'int n = 1;\nwhile (n <= 5) {\n    System.out.println("n = " + n);\n    n++;\n}' }
+    ]
+  },
+  { id:'methods', icon:'⚙️', title:'Methods', desc:'Functions in Java', level:'beg',
+    content: [
+      { h:'Defining Methods', t:'Methods are reusable blocks of code.', code:'static int add(int a, int b) {\n    return a + b;\n}\n// call it:\nint result = add(10, 5);\nSystem.out.println(result);', run:'int result = 10 + 5;\nSystem.out.println("add(10,5) = " + result);\nint product = 10 * 5;\nSystem.out.println("multiply(10,5) = " + product);' },
+      { h:'Tip', tip:'Methods avoid code repetition. Use void if no return value, or the return type (int, String...) if returning data.' }
+    ]
+  },
+  { id:'arrays', icon:'📊', title:'Arrays', desc:'Store multiple values', level:'int',
+    content: [
+      { h:'Arrays', t:'Store multiple values of the same type.', code:'int[] nums = {10, 20, 30, 40, 50};\nfor (int i = 0; i < nums.length; i++) {\n    System.out.println("nums["+i+"] = "+nums[i]);\n}', run:'int[] nums = {10, 20, 30, 40, 50};\nfor (int i = 0; i < nums.length; i++) {\n    System.out.println("nums[" + i + "] = " + nums[i]);\n}' },
+      { h:'Tip', tip:'Array index starts at 0. Use .length for size. Arrays have fixed size; use ArrayList for dynamic size.' }
+    ]
+  },
+  { id:'oop', icon:'🏗️', title:'OOP Basics', desc:'Classes & Objects', level:'int',
+    content: [
+      { h:'Classes & Objects', t:'Java is object-oriented. Everything is a class.', code:'class Car {\n  String brand;\n  int speed;\n  Car(String b, int s) {\n    brand = b; speed = s;\n  }\n  void show() {\n    System.out.println(brand + ": " + speed + "km/h");\n  }\n}', run:'String brand = "Toyota";\nint speed = 120;\nSystem.out.println(brand + ": " + speed + "km/h");\nSystem.out.println("Object created!");\nSystem.out.println("OOP makes code reusable.");' },
+      { h:'Tip', tip:'A class is a blueprint. An object is an instance of a class. Constructor initializes the object.' }
+    ]
+  },
+  { id:'strings', icon:'📝', title:'Strings', desc:'Text manipulation', level:'int',
+    content: [
+      { h:'String Methods', t:'Java String has many useful built-in methods.', code:'String s = "Hello Java";\nSystem.out.println(s.length());\nSystem.out.println(s.toUpperCase());\nSystem.out.println(s.toLowerCase());\nSystem.out.println(s.contains("Java"));', run:'String s = "Hello Java";\nSystem.out.println(s.length());\nSystem.out.println(s.toUpperCase());\nSystem.out.println(s.toLowerCase());' },
+      { h:'Tip', tip:'Strings are immutable in Java. Use StringBuilder for many concatenations. Always use .equals() not == to compare Strings.' }
+    ]
+  },
+  { id:'exceptions', icon:'⚠️', title:'Exception Handling', desc:'try-catch-finally', level:'adv',
+    content: [
+      { h:'Handling Errors', t:'Prevent your program from crashing using try-catch.', code:'try {\n    int result = 10 / 0;\n    System.out.println(result);\n} catch (ArithmeticException e) {\n    System.out.println("Error: " + e.getMessage());\n} finally {\n    System.out.println("Always runs");\n}', run:'System.out.println("Trying division...");\nSystem.out.println("Error: / by zero");\nSystem.out.println("Always runs (finally block)");' },
+      { h:'Tip', tip:'Common exceptions: ArithmeticException, NullPointerException, ArrayIndexOutOfBoundsException. Always handle exceptions gracefully.' }
+    ]
+  },
+];
+
+function renderTopics() {
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = topics.map(t => `
+    <div class="topic-card" onclick="openLesson('${t.id}')">
+      <div class="tc-icon">${t.icon}</div>
+      <div class="tc-title">${t.title}</div>
+      <div class="tc-desc">${t.desc}</div>
+      <div class="tc-level ${t.level}">${t.level==='beg'?'Beginner':t.level==='int'?'Intermediate':'Advanced'}</div>
+    </div>`).join('');
+}
+
+function openLesson(id) {
+  const topic = topics.find(t=>t.id===id);
+  if (!topic) return;
+  document.getElementById('lessonTitle').textContent = topic.icon + ' ' + topic.title;
+  const body = document.getElementById('lessonBody');
+  body.innerHTML = topic.content.map(s => {
+    if (s.tip) return `<div class="lesson-section"><div class="tip-box"><strong>💡 Tip:</strong> ${s.tip}</div></div>`;
+    return `<div class="lesson-section">
+      <div class="ls-title">${s.h}</div>
+      ${s.t ? `<div class="ls-text">${s.t}</div>` : ''}
+      ${s.code ? `<div class="code-block">${escHTML(s.code)}</div>` : ''}
+      ${s.run ? `<button class="try-btn" onclick="tryCode(${JSON.stringify(s.run)})">▶ Try this in Editor</button>` : ''}
+    </div>`;
+  }).join('');
+  document.getElementById('learnBrowser').style.display = 'none';
+  document.getElementById('lessonView').classList.add('open');
+  addXP(5);
+}
+
+function closelesson() {
+  document.getElementById('learnBrowser').style.display = 'block';
+  document.getElementById('lessonView').classList.remove('open');
+}
+
+function tryCode(code) {
+  const full = `public class Main {\n    public static void main(String[] args) {\n        ${code.split('\n').join('\n        ')}\n    }\n}`;
+  document.getElementById('editor').value = full;
+  updateGutter();
+  switchTab('editor');
+  showToast('✅ Code loaded! Press ▶ RUN', 'ok');
+}
+
+function escHTML(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ═══════════════════════════════════════════
+// QUIZ DATA
+// ═══════════════════════════════════════════
+const quizzes = [
+  { q:'What is the correct way to declare an integer in Java?', opts:['int x = 5;','integer x = 5;','Int x = 5;','x = 5;'], ans:0, explain:'In Java, <strong>int</strong> (lowercase) is the correct data type for integers.' },
+  { q:'Which method prints text WITH a new line?', opts:['System.out.print()','System.out.println()','System.out.write()','console.log()'], ans:1, explain:'<strong>println()</strong> prints with newline. <strong>print()</strong> prints without newline.' },
+  { q:'What does this output?\nint x = 5;\nSystem.out.println(x * 2);', code:'int x = 5;\nSystem.out.println(x * 2);', opts:['5','25','10','52'], ans:2, explain:'5 * 2 = <strong>10</strong>. The * operator multiplies numbers.' },
+  { q:'Which loop is guaranteed to run at least once?', opts:['for loop','while loop','do-while loop','for-each loop'], ans:2, explain:'<strong>do-while</strong> executes the body first, then checks condition — so it runs at least once.' },
+  { q:'How do you start a single-line comment in Java?', opts:['/* comment */','# comment','// comment','<!-- comment -->'], ans:2, explain:'Java single-line comments start with <strong>//</strong>. Multi-line use /* ... */.' },
+  { q:'What keyword creates a new object?', opts:['create','object','new','make'], ans:2, explain:'The <strong>new</strong> keyword allocates memory and creates an object: new ClassName()' },
+  { q:'What is the index of the FIRST element in an array?', opts:['1','0','-1','Depends on array'], ans:1, explain:'Java arrays are <strong>zero-indexed</strong>. First element is at index 0.' },
+  { q:'Which is the correct if-else syntax?', opts:['if x > 5 { }','if (x > 5) { }','if [x > 5] { }','if {x > 5} { }'], ans:1, explain:'Java requires parentheses around the condition: <strong>if (condition) { }</strong>' },
+  { q:'What does void mean in a method declaration?', opts:['Method returns a number','Method returns nothing','Method is private','Method is static'], ans:1, explain:'<strong>void</strong> means the method does not return any value.' },
+  { q:'Which operator checks equality in Java?', opts:['=','===','==','.equals()'], ans:2, explain:'<strong>==</strong> checks equality for primitives. Use <strong>.equals()</strong> for String comparison.' },
+];
+
+let quizState = {};
+
+function initQuiz() {
+  quizState = { answers: {}, score: 0, streak: 0 };
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const cont = document.getElementById('quizContainer');
+  cont.innerHTML = quizzes.map((q, qi) => `
+    <div class="quiz-card">
+      <div class="qc-num">QUESTION ${qi+1} OF ${quizzes.length}</div>
+      <div class="qc-q">${q.q}</div>
+      ${q.code ? `<div class="qc-code">${escHTML(q.code)}</div>` : ''}
+      <div class="qc-opts">
+        ${q.opts.map((o,oi) => `<button class="qopt" id="qopt-${qi}-${oi}" onclick="answerQ(${qi},${oi})">${o}</button>`).join('')}
+      </div>
+      <div class="qc-explain" id="qexp-${qi}">${q.explain}</div>
+    </div>`).join('');
+  updateQuizUI();
+}
+
+function answerQ(qi, oi) {
+  if (quizState.answers[qi] !== undefined) return;
+  quizState.answers[qi] = oi;
+  const correct = oi === quizzes[qi].ans;
+  if (correct) { quizState.score++; quizState.streak++; addXP(20); }
+  else { quizState.streak = 0; }
+
+  // Style options
+  quizzes[qi].opts.forEach((_,i) => {
+    const el = document.getElementById(`qopt-${qi}-${i}`);
+    el.classList.add('disabled');
+    if (i === quizzes[qi].ans) el.classList.add('correct');
+    else if (i === oi) el.classList.add('wrong');
+  });
+  document.getElementById(`qexp-${qi}`).classList.add('show');
+
+  updateQuizUI();
+  if (Object.keys(quizState.answers).length === quizzes.length) {
+    earnBadge('quiz_master');
+    showToast(`🎉 Quiz done! ${quizState.score}/${quizzes.length} correct`, 'ok');
+  }
+}
+
+function updateQuizUI() {
+  document.getElementById('quizScore').textContent = quizState.score || 0;
+  document.getElementById('streakText').textContent = `🔥 Streak: ${quizState.streak||0}`;
+  document.getElementById('answeredText').textContent = `${Object.keys(quizState.answers||{}).length} / ${quizzes.length} answered`;
+  state.quizScore = quizState.score || 0;
+  updateProgressUI();
+}
+
+function resetQuiz() {
+  initQuiz();
+  showToast('🔄 Quiz reset!', 'ok');
+}
+
+// ═══════════════════════════════════════════
+// SNIPPETS DATA
+// ═══════════════════════════════════════════
+const snippets = [
+  { cat:'Basics', name:'Hello World', desc:'First Java program', tag:'beg', icon:'👋',
+    code:`public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello, World!");\n    }\n}` },
+  { cat:'Basics', name:'Variables', desc:'All data types', tag:'beg', icon:'📦',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int age = 20;\n        double price = 9.99;\n        String name = "JavaDroid";\n        boolean isOpen = true;\n        char grade = 'A';\n        System.out.println(name + " v" + price);\n        System.out.println("Age: " + age + ", Open: " + isOpen);\n    }\n}` },
+  { cat:'Basics', name:'User Input', desc:'Scanner for input', tag:'beg', icon:'⌨️',
+    code:`import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        System.out.print("Enter your name: ");\n        String name = sc.nextLine();\n        System.out.print("Enter your age: ");\n        int age = sc.nextInt();\n        System.out.println("Hello " + name + "! You are " + age);\n        sc.close();\n    }\n}` },
+  { cat:'Control Flow', name:'If / Else If', desc:'Multiple conditions', tag:'beg', icon:'🔀',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int score = 75;\n        String grade;\n        if (score >= 90) grade = "A";\n        else if (score >= 80) grade = "B";\n        else if (score >= 70) grade = "C";\n        else if (score >= 60) grade = "D";\n        else grade = "F";\n        System.out.println("Score: " + score + " → Grade: " + grade);\n    }\n}` },
+  { cat:'Control Flow', name:'Switch Statement', desc:'Multiple case check', tag:'beg', icon:'⚡',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int day = 3;\n        String dayName;\n        switch (day) {\n            case 1: dayName = "Monday"; break;\n            case 2: dayName = "Tuesday"; break;\n            case 3: dayName = "Wednesday"; break;\n            case 4: dayName = "Thursday"; break;\n            case 5: dayName = "Friday"; break;\n            default: dayName = "Weekend";\n        }\n        System.out.println("Day " + day + " is " + dayName);\n    }\n}` },
+  { cat:'Loops', name:'For Loop', desc:'Counted iteration', tag:'beg', icon:'🔁',
+    code:`public class Main {\n    public static void main(String[] args) {\n        // Count up\n        for (int i = 1; i <= 5; i++) {\n            System.out.println("Count: " + i);\n        }\n        // Count down\n        for (int i = 5; i >= 1; i--) {\n            System.out.println("Countdown: " + i);\n        }\n    }\n}` },
+  { cat:'Loops', name:'While Loop', desc:'Condition-based loop', tag:'beg', icon:'🔄',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int sum = 0, i = 1;\n        while (i <= 100) {\n            sum += i;\n            i++;\n        }\n        System.out.println("Sum 1-100 = " + sum);\n    }\n}` },
+  { cat:'Arrays', name:'Array Basics', desc:'Declare and iterate', tag:'int', icon:'📊',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int[] nums = {15, 8, 23, 4, 42, 16};\n        int max = nums[0], min = nums[0], sum = 0;\n        for (int n : nums) {\n            if (n > max) max = n;\n            if (n < min) min = n;\n            sum += n;\n        }\n        System.out.println("Max: " + max);\n        System.out.println("Min: " + min);\n        System.out.println("Sum: " + sum);\n        System.out.println("Avg: " + (sum / nums.length));\n    }\n}` },
+  { cat:'Arrays', name:'2D Array', desc:'Matrix / grid', tag:'int', icon:'🔲',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int[][] matrix = {\n            {1, 2, 3},\n            {4, 5, 6},\n            {7, 8, 9}\n        };\n        System.out.println("Matrix:");\n        for (int i = 0; i < matrix.length; i++) {\n            for (int j = 0; j < matrix[i].length; j++) {\n                System.out.print(matrix[i][j] + " ");\n            }\n            System.out.println();\n        }\n    }\n}` },
+  { cat:'Math', name:'Fibonacci', desc:'Number sequence', tag:'int', icon:'🌀',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int n = 15;\n        int a = 0, b = 1;\n        System.out.print("Fibonacci: ");\n        for (int i = 0; i < n; i++) {\n            System.out.print(a + " ");\n            int temp = a + b;\n            a = b; b = temp;\n        }\n        System.out.println();\n    }\n}` },
+  { cat:'Math', name:'Prime Numbers', desc:'Check & list primes', tag:'int', icon:'🔢',
+    code:`public class Main {\n    static boolean isPrime(int n) {\n        if (n < 2) return false;\n        for (int i = 2; i <= Math.sqrt(n); i++)\n            if (n % i == 0) return false;\n        return true;\n    }\n    public static void main(String[] args) {\n        System.out.print("Primes up to 50: ");\n        for (int i = 2; i <= 50; i++)\n            if (isPrime(i)) System.out.print(i + " ");\n        System.out.println();\n    }\n}` },
+  { cat:'Math', name:'Factorial', desc:'Recursive calculation', tag:'int', icon:'❗',
+    code:`public class Main {\n    static long factorial(int n) {\n        if (n <= 1) return 1;\n        return n * factorial(n - 1);\n    }\n    public static void main(String[] args) {\n        for (int i = 0; i <= 10; i++)\n            System.out.println(i + "! = " + factorial(i));\n    }\n}` },
+  { cat:'OOP', name:'Class & Object', desc:'Basic OOP example', tag:'int', icon:'🏗️',
+    code:`class Student {\n    String name;\n    int age;\n    double gpa;\n    \n    Student(String n, int a, double g) {\n        name = n; age = a; gpa = g;\n    }\n    \n    void display() {\n        System.out.println("Name: " + name);\n        System.out.println("Age: " + age);\n        System.out.println("GPA: " + gpa);\n    }\n    \n    String getGrade() {\n        if (gpa >= 3.7) return "A";\n        if (gpa >= 3.0) return "B";\n        return "C";\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Student s = new Student("Arnab", 20, 3.8);\n        s.display();\n        System.out.println("Grade: " + s.getGrade());\n    }\n}` },
+  { cat:'Advanced', name:'Exception Handling', desc:'try-catch-finally', tag:'adv', icon:'⚠️',
+    code:`public class Main {\n    public static void main(String[] args) {\n        int[] arr = {1, 2, 3};\n        try {\n            System.out.println(arr[10]);\n        } catch (ArrayIndexOutOfBoundsException e) {\n            System.out.println("Error: Index out of bounds!");\n        } catch (Exception e) {\n            System.out.println("General error: " + e.getMessage());\n        } finally {\n            System.out.println("Cleanup done.");\n        }\n        System.out.println("Program continues...");\n    }\n}` },
+  { cat:'Advanced', name:'String Methods', desc:'Built-in String functions', tag:'adv', icon:'📝',
+    code:`public class Main {\n    public static void main(String[] args) {\n        String s = "  Hello, JavaDroid!  ";\n        System.out.println("Original: '" + s + "'");\n        System.out.println("Trimmed: '" + s.trim() + "'");\n        System.out.println("Upper: " + s.trim().toUpperCase());\n        System.out.println("Lower: " + s.trim().toLowerCase());\n        System.out.println("Length: " + s.trim().length());\n        System.out.println("Replace: " + s.trim().replace("Java", "Android"));\n    }\n}` },
+];
+
+function renderSnippets(filter='') {
+  const list = document.getElementById('snippetList');
+  const cats = [...new Set(snippets.map(s=>s.cat))];
+  const fl = filter.toLowerCase();
+  list.innerHTML = cats.map(cat => {
+    const items = snippets.filter(s=>s.cat===cat&&(!fl||(s.name+s.desc+s.cat).toLowerCase().includes(fl)));
+    if (!items.length) return '';
+    return `<div class="snip-cat">${cat.toUpperCase()}</div>` +
+      items.map(s => `
+        <div class="snip-card" onclick="loadSnippet(${JSON.stringify(s.code)})">
+          <div class="snip-icon">${s.icon}</div>
+          <div class="snip-info">
+            <div class="snip-name">${s.name}</div>
+            <div class="snip-desc">${s.desc}</div>
+          </div>
+          <div class="snip-tag ${s.tag}">${s.tag==='beg'?'Beginner':s.tag==='int'?'Inter':'Advanced'}</div>
+        </div>`).join('');
+  }).join('');
+}
+
+function filterSnippets() { renderSnippets(document.getElementById('snipSearch').value); }
+
+function loadSnippet(code) {
+  document.getElementById('editor').value = code;
+  updateGutter(); onEdit();
+  switchTab('editor');
+  showToast('⚡ Snippet loaded! Press ▶ RUN', 'ok');
+  addXP(5);
+}
+
+// ═══════════════════════════════════════════
+// CHALLENGES DATA
+// ═══════════════════════════════════════════
+const challenges = [
+  { id:'c1', title:'Hello Yourself', diff:'easy', desc:'Print your name and a greeting message.', task:'Write a Java program that prints:\n"My name is [name] and I am learning Java!"', hint:'Use System.out.println() with String concatenation (+).', sample:`public class Main {\n    public static void main(String[] args) {\n        String name = "Arnab";\n        System.out.println("My name is " + name + " and I am learning Java!");\n    }\n}`, tags:['output','strings'], xp:20 },
+  { id:'c2', title:'Sum Calculator', diff:'easy', desc:'Calculate sum of numbers 1 to N.', task:'Write a program that calculates and prints the sum of all numbers from 1 to 100.', hint:'Use a for loop with += to accumulate the sum.', sample:`public class Main {\n    public static void main(String[] args) {\n        int sum = 0;\n        for (int i = 1; i <= 100; i++) sum += i;\n        System.out.println("Sum = " + sum);\n    }\n}`, tags:['loops','math'], xp:30 },
+  { id:'c3', title:'Even or Odd', diff:'easy', desc:'Check if a number is even or odd.', task:'Write a program that checks numbers 1-10 and prints whether each is "even" or "odd".', hint:'Use the modulo operator (%). If num % 2 == 0, it is even.', sample:`public class Main {\n    public static void main(String[] args) {\n        for (int i = 1; i <= 10; i++)\n            System.out.println(i + " is " + (i%2==0?"even":"odd"));\n    }\n}`, tags:['loops','conditions'], xp:30 },
+  { id:'c4', title:'Multiplication Table', diff:'easy', desc:'Print the 5 times table.', task:'Print the multiplication table for 5 (from 5×1 to 5×10).', hint:'Use a for loop. Print: "5 x i = result"', sample:`public class Main {\n    public static void main(String[] args) {\n        for (int i = 1; i <= 10; i++)\n            System.out.println("5 x " + i + " = " + (5*i));\n    }\n}`, tags:['loops','math'], xp:25 },
+  { id:'c5', title:'Largest in Array', diff:'med', desc:'Find the maximum value in an array.', task:'Given array {34, 12, 87, 5, 62, 91, 23}, find and print the largest number.', hint:'Initialize max = array[0], then loop and compare each element.', sample:`public class Main {\n    public static void main(String[] args) {\n        int[] arr = {34,12,87,5,62,91,23};\n        int max = arr[0];\n        for (int n : arr) if (n > max) max = n;\n        System.out.println("Largest: " + max);\n    }\n}`, tags:['arrays','loops'], xp:50 },
+  { id:'c6', title:'Palindrome Check', diff:'med', desc:'Check if a string reads same forwards & backwards.', task:'Write a program to check if "racecar" is a palindrome.', hint:'Reverse the string and compare with original. Or use two pointers from each end.', sample:`public class Main {\n    public static void main(String[] args) {\n        String s = "racecar";\n        String rev = new StringBuilder(s).reverse().toString();\n        System.out.println(s + " → " + (s.equals(rev)?"Palindrome":"Not palindrome"));\n    }\n}`, tags:['strings','logic'], xp:60 },
+  { id:'c7', title:'FizzBuzz', diff:'med', desc:'Classic programming challenge.', task:'Print 1-30. For multiples of 3 print "Fizz", multiples of 5 print "Buzz", both print "FizzBuzz".', hint:'Check % 3 == 0 and % 5 == 0. Check both FIRST (FizzBuzz) before individual checks.', sample:`public class Main {\n    public static void main(String[] args) {\n        for (int i=1;i<=30;i++){\n            if(i%15==0)System.out.println("FizzBuzz");\n            else if(i%3==0)System.out.println("Fizz");\n            else if(i%5==0)System.out.println("Buzz");\n            else System.out.println(i);\n        }\n    }\n}`, tags:['loops','conditions'], xp:55 },
+  { id:'c8', title:'Count Vowels', diff:'med', desc:'Count vowels in a string.', task:'Count how many vowels (a,e,i,o,u) are in "Hello World JavaDroid".', hint:'Loop through each character and check if it is a vowel using if or switch.', sample:`public class Main {\n    public static void main(String[] args) {\n        String s = "Hello World JavaDroid";\n        int count = 0;\n        for (char c : s.toLowerCase().toCharArray())\n            if("aeiou".indexOf(c)>=0) count++;\n        System.out.println("Vowels: " + count);\n    }\n}`, tags:['strings','loops'], xp:65 },
+  { id:'c9', title:'Bubble Sort', diff:'hard', desc:'Implement bubble sort algorithm.', task:'Sort the array {64, 34, 25, 12, 22, 11, 90} in ascending order using bubble sort.', hint:'Compare adjacent elements and swap if out of order. Repeat until sorted.', sample:`public class Main {\n    public static void main(String[] args) {\n        int[] arr = {64,34,25,12,22,11,90};\n        int n = arr.length;\n        for(int i=0;i<n-1;i++)\n            for(int j=0;j<n-i-1;j++)\n                if(arr[j]>arr[j+1]){int t=arr[j];arr[j]=arr[j+1];arr[j+1]=t;}\n        for(int x:arr) System.out.print(x+" ");\n    }\n}`, tags:['arrays','algorithms'], xp:100 },
+  { id:'c10', title:'Student Grade System', diff:'hard', desc:'Build a complete grade calculator.', task:'Store 5 students with names and scores. Calculate average, find top student, assign letter grades.', hint:'Use parallel arrays for names and scores. Loop to find max, calculate average.', sample:`public class Main {\n    public static void main(String[] args) {\n        String[] names={"Ali","Bob","Cara","Dan","Eva"};\n        int[] scores={85,92,78,96,88};\n        int sum=0,maxI=0;\n        for(int i=0;i<scores.length;i++){sum+=scores[i];if(scores[i]>scores[maxI])maxI=i;}\n        System.out.println("Average: "+(sum/scores.length));\n        System.out.println("Top: "+names[maxI]+" ("+scores[maxI]+")");\n        for(int i=0;i<names.length;i++){\n            String g=scores[i]>=90?"A":scores[i]>=80?"B":scores[i]>=70?"C":"D";\n            System.out.println(names[i]+": "+scores[i]+" ("+g+")");\n        }\n    }\n}`, tags:['arrays','oop','logic'], xp:120 },
+];
+
+function renderChallenges() {
+  const list = document.getElementById('chalList');
+  list.innerHTML = challenges.map(c => `
+    <div class="chal-card ${c.diff}" onclick="openChal('${c.id}')">
+      <div class="cc-top">
+        <span class="cc-num">#${c.id.replace('c','')}</span>
+        <span class="cc-title">${c.title}</span>
+        ${state.chalDone.has(c.id)?'<span class="cc-done">✓</span>':''}
+        <span class="cc-diff">${c.diff.toUpperCase()}</span>
+      </div>
+      <div class="cc-desc">${c.desc}</div>
+      <div class="cc-tags">${c.tags.map(t=>`<span class="cc-tag">${t}</span>`).join('')}
+        <span class="cc-tag">+${c.xp} XP</span>
+      </div>
+    </div>`).join('');
+}
+
+function openChal(id) {
+  const c = challenges.find(ch=>ch.id===id);
+  if (!c) return;
+  document.getElementById('chalDetailTitle').textContent = c.title;
+  document.getElementById('chalDetailBody').innerHTML = `
+    <div class="cd-title">${c.title}</div>
+    <div class="cd-meta">${c.diff.toUpperCase()} • +${c.xp} XP • ${c.tags.join(', ')}</div>
+    <div class="cd-section">
+      <div class="cd-label">DESCRIPTION</div>
+      <div class="cd-text">${c.desc}</div>
+    </div>
+    <div class="cd-section">
+      <div class="cd-label">TASK</div>
+      <div class="cd-text" style="white-space:pre-line">${c.task}</div>
+    </div>
+    <button class="hint-btn" onclick="toggleHint('hint-${id}')">💡 Show Hint</button>
+    <div class="hint-box" id="hint-${id}">${c.hint}</div>
+    <div class="cd-section" style="margin-top:12px">
+      <div class="cd-label">SAMPLE SOLUTION</div>
+      <div class="code-block">${escHTML(c.sample)}</div>
+    </div>
+    <button class="solve-btn" onclick="solveChallenge('${id}')">▶ Try in Editor</button>
+    ${state.chalDone.has(id) ? '<div style="text-align:center;color:var(--ok);font-weight:700;margin-top:8px">✓ Completed!</div>' : ''}
+  `;
+  document.getElementById('chalBrowser').style.display = 'none';
+  document.getElementById('chalDetail').classList.add('open');
+}
+
+function closeChal() {
+  document.getElementById('chalBrowser').style.display = 'block';
+  document.getElementById('chalDetail').classList.remove('open');
+  renderChallenges();
+}
+
+function toggleHint(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('show');
+}
+
+function solveChallenge(id) {
+  const c = challenges.find(ch=>ch.id===id);
+  document.getElementById('editor').value = c.sample;
+  updateGutter(); onEdit();
+  state.chalDone.add(id);
+  addXP(c.xp);
+  if (state.chalDone.size >= 3) earnBadge('challenger');
+  if (state.chalDone.size >= 10) earnBadge('problem_solver');
+  switchTab('editor');
+  showToast(`🏆 Challenge loaded! +${c.xp} XP`, 'ok');
+  updateProgressUI();
+}
+
+// ═══════════════════════════════════════════
+// CHEAT SHEET
+// ═══════════════════════════════════════════
+const cheatData = [
+  { title:'DATA TYPES', rows:[
+    ['int x = 5;','Integer (whole number)'],
+    ['double x = 3.14;','Decimal number'],
+    ['String s = "hi";','Text (always double quotes)'],
+    ['boolean b = true;','True or false'],
+    ['char c = \'A\';','Single character'],
+    ['long n = 999L;','Large integer'],
+  ]},
+  { title:'OUTPUT', rows:[
+    ['System.out.println(x);','Print with new line'],
+    ['System.out.print(x);','Print without new line'],
+    ['System.out.printf("%.2f",x);','Formatted print'],
+  ]},
+  { title:'OPERATORS', rows:[
+    ['+  -  *  /  %','Arithmetic operators'],
+    ['==  !=  >  <  >=  <=','Comparison operators'],
+    ['&&  ||  !','Logical AND, OR, NOT'],
+    ['++  --','Increment / Decrement'],
+    ['+=  -=  *=  /=','Compound assignment'],
+  ]},
+  { title:'CONTROL FLOW', rows:[
+    ['if (cond) { }','If statement'],
+    ['else if (cond) { }','Else if'],
+    ['else { }','Else'],
+    ['switch (x) { case 1: }','Switch statement'],
+    ['for (int i=0;i<n;i++) { }','For loop'],
+    ['while (cond) { }','While loop'],
+    ['do { } while (cond);','Do-while loop'],
+    ['for (int x : arr) { }','For-each loop'],
+    ['break;','Exit loop'],
+    ['continue;','Skip to next iteration'],
+  ]},
+  { title:'ARRAYS', rows:[
+    ['int[] arr = new int[5];','Declare array size 5'],
+    ['int[] arr = {1,2,3};','Array with values'],
+    ['arr[0]','Access first element'],
+    ['arr.length','Get array length'],
+    ['int[][] m = new int[3][3];','2D array (matrix)'],
+  ]},
+  { title:'STRINGS', rows:[
+    ['s.length()','String length'],
+    ['s.toUpperCase()','UPPERCASE'],
+    ['s.toLowerCase()','lowercase'],
+    ['s.trim()','Remove whitespace'],
+    ['s.contains("x")','Check if contains'],
+    ['s.replace("a","b")','Replace text'],
+    ['s.equals("hi")','Compare strings'],
+    ['s.charAt(0)','Get character at index'],
+    ['s.substring(1,4)','Extract part of string'],
+  ]},
+  { title:'MATH CLASS', rows:[
+    ['Math.abs(x)','Absolute value'],
+    ['Math.sqrt(x)','Square root'],
+    ['Math.pow(x,y)','x to the power of y'],
+    ['Math.max(a,b)','Larger of two values'],
+    ['Math.min(a,b)','Smaller of two values'],
+    ['Math.round(x)','Round to nearest int'],
+    ['Math.random()','Random 0.0 to 1.0'],
+  ]},
+  { title:'OOP KEYWORDS', rows:[
+    ['class Name { }','Declare a class'],
+    ['new ClassName()','Create object'],
+    ['this.field','Current object field'],
+    ['public / private','Access modifiers'],
+    ['static','Belongs to class, not object'],
+    ['void','Method returns nothing'],
+    ['return value;','Return from method'],
+    ['extends','Inherit from class'],
+  ]},
+];
+
+function renderCheatSheet() {
+  document.getElementById('cheatContent').innerHTML = `
+    <div style="font-size:18px;font-weight:800;color:var(--acc);margin-bottom:4px">📋 Java Cheat Sheet</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:14px">Quick reference for all Java basics</div>` +
+    cheatData.map(sec => `
+      <div class="cs-section">
+        <div class="cs-title">${sec.title}</div>
+        ${sec.rows.map(([code,desc]) => `
+          <div class="cs-row">
+            <span class="cs-code">${escHTML(code)}</span>
+            <span class="cs-desc">${desc}</span>
+          </div>`).join('')}
+      </div>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// PROGRESS & XP
+// ═══════════════════════════════════════════
+const badgeDefs = [
+  { id:'first_run', icon:'🚀', name:'First Run' },
+  { id:'ten_runs', icon:'⚡', name:'10 Runs' },
+  { id:'quiz_master', icon:'🧠', name:'Quiz Master' },
+  { id:'challenger', icon:'🏆', name:'Challenger' },
+  { id:'problem_solver', icon:'💡', name:'Solver' },
+  { id:'saver', icon:'💾', name:'Saver' },
+  { id:'veteran', icon:'⭐', name:'Veteran' },
+  { id:'xp100', icon:'🔥', name:'100 XP' },
+];
+
+function addXP(amount) {
+  state.xp += amount;
+  if (state.xp >= 100) earnBadge('xp100');
+  if (state.xp >= 500) earnBadge('veteran');
+  updateProgressUI();
+}
+
+function earnBadge(id) {
+  if (state.badges.has(id)) return;
+  state.badges.add(id);
+  const b = badgeDefs.find(b=>b.id===id);
+  if (b) showToast(`${b.icon} Badge earned: ${b.name}!`, 'ok');
+  updateProgressUI();
+}
+
+function updateProgressUI() {
+  const level = Math.floor(state.xp / 100) + 1;
+  const xpInLevel = state.xp % 100;
+  const titles = ['Novice','Learner','Coder','Developer','Engineer','Expert','Master'];
+  const title = titles[Math.min(level-1, titles.length-1)];
+
+  document.getElementById('progressContent').innerHTML = `
+    <div class="prog-hero">
+      <div class="prog-avatar">👨‍💻</div>
+      <div class="prog-name">Java Learner</div>
+      <div class="prog-title">Level ${level} — ${title}</div>
+      <div class="prog-xp">
+        <span class="xp-text">${state.xp} XP</span>
+        <div class="xp-bar-wrap"><div class="xp-bar" style="width:${xpInLevel}%"></div></div>
+        <span class="xp-text">${xpInLevel}/100</span>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-val">${state.runsTotal}</div><div class="stat-lbl">RUNS</div></div>
+      <div class="stat-box"><div class="stat-val">${state.chalDone.size}</div><div class="stat-lbl">SOLVED</div></div>
+      <div class="stat-box"><div class="stat-val">${quizState.score||0}</div><div class="stat-lbl">QUIZ SCORE</div></div>
+    </div>
+    <div class="badge-section">
+      <div class="badge-title">🏅 BADGES (${state.badges.size}/${badgeDefs.length})</div>
+      <div class="badge-grid">
+        ${badgeDefs.map(b=>`
+          <div class="badge-item ${state.badges.has(b.id)?'earned':''}">
+            <div class="bi-icon">${b.icon}</div>
+            <div class="bi-name">${b.name}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div style="background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:4px">
+      <div style="font-size:12px;font-weight:800;color:var(--text3);margin-bottom:8px;letter-spacing:0.5px">HOW TO EARN XP</div>
+      <div style="font-size:12px;color:var(--text2);line-height:2">
+        ▶ Run code → +10 XP<br>
+        💾 Save code → +5 XP<br>
+        📚 Open a lesson → +5 XP<br>
+        ⚡ Load snippet → +5 XP<br>
+        🧠 Answer quiz → +20 XP<br>
+        🏆 Complete challenge → +20-120 XP
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:10px;color:var(--text3);text-align:center;line-height:1.8">
+      JavaDroid v2.0 • Built with Claude AI by Anthropic<br>
+      For educational purposes • Open source • MIT License
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimer;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type==='ok'?' ok-toast':type==='err'?' err-toast':'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+function init() {
+  updateGutter();
+  renderTopics();
+  initQuiz();
+  renderSnippets();
+  renderChallenges();
+  renderCheatSheet();
+  updateProgressUI();
+  // Load saved code
+  const saved = localStorage.getItem('jd_code');
+  if (saved) { document.getElementById('editor').value = saved; updateGutter(); }
+  document.getElementById('sb1').textContent = 'READY • JavaDroid v2.0';
+}
+
+init();
+</script>
+</body>
+</html>
