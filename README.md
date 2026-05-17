@@ -1,30 +1,20 @@
 # javaDroid-
 javaDroid is a free open source project for learn and practice java programming. 
+                
+               
+              
+          <img width="720" height="1600" alt="Screenshot_20260517-190125" src="https://github.com/user-attachments/assets/7a028997-c5f7-4a92-aaba-a892b65144dc" />
+    
+              
+              
+              
+              
+User Guide 
 
-.
-.
-.
-
-
-
-<img width="888" height="1920" alt="InShot_20260516_133347494" src="https://github.com/user-attachments/assets/f9e9945e-0ce5-41bf-881e-6042145c67ba" />
-
-
-
-.
-.
-.
-.
-
-User guide 
-first download html file than open the download file with any browser 
+First download html file than open the download file with any browser 
 
 
 
-Credits & Acknowledgements
-
-This project was built with assistance
-from Claude AI by Anthropic (claude.ai)
 
 ### Purpose
 ✅ This project is for EDUCATION ONLY
@@ -32,10 +22,19 @@ from Claude AI by Anthropic (claude.ai)
 ✅ Non-commercial, free to use
 ✅ Open source under MIT License
 
+
 ### How it was made
+- Made by: aoynB
 - AI Tool used: Claude (claude.ai)
-- Made by: ARNAB
 - Purpose: Learning Java on Android
+
+
+
+
+Credits & Acknowledgements
+
+This project was built with assistance
+from Claude 
 
 ### Disclaimer
 This is a Java simulator for learning
