@@ -2,14 +2,14 @@
 javaDroid is a free open source project for learn and practice java programming. 
                 
                
-              
-          <img width="720" height="1600" alt="Screenshot_20260517-190125" src="https://github.com/user-attachments/assets/7a028997-c5f7-4a92-aaba-a892b65144dc" />
-    
-              
-              
+  <img width="958" height="1920" alt="InShot_20260517_193708191" src="https://github.com/user-attachments/assets/33af9db5-25dd-48d7-88fc-3057afd76889" />
+
+
               
               
-User Guide 
+              
+              
+### User Guide 
 
 First download html file than open the download file with any browser 
 
@@ -18,8 +18,11 @@ First download html file than open the download file with any browser
 
 ### Purpose
 ✅ This project is for EDUCATION ONLY
+
 ✅ Built to help beginners learn Java
+
 ✅ Non-commercial, free to use
+
 ✅ Open source under MIT License
 
 
